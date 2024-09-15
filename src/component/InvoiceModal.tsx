@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect } from "react";
+import { ChangeEvent } from "react";
 import { billed, service } from "../data/data";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from '../Redux/store';
@@ -25,10 +25,6 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
   const selectorTax = useSelector((state: RootState)=> state.tax)
   const selectorTotal = useSelector((state: RootState)=> state.total)
   const dispatch = useDispatch()
-  useEffect(()=> {
-    console.log(selector)
-    console.log(selectorData)
-  }, [])
   // const [data, setData] = useState<Data[]>([]);
   const handleNewData = () => {
     dispatch(handleNewFormData())

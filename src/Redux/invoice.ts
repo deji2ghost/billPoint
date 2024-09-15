@@ -95,24 +95,29 @@ const dropDownSlice = createSlice({
       const selectedValue = e.target.value;
       const selectedDuration =
         state.cart.find((select) => select.name === selectedValue)?.duration ||
-        "";
+        0;
       const newDescription = state.cart.find(
         (select) => select.name === selectedValue
       );
-      const latestData = state.data.map((date) => {
-        if (date?.id === id) {
-          return {
-            ...date,
-            description: `${newDescription?.name}, ${newDescription?.amount}, ${newDescription?.duration}`,
-            duration: selectedDuration,
-            amount: newDescription.amount,
-            totalAmount: newDescription.amount * newDescription.duration,
-          };
-        } else {
-          return date;
-        }
-      });
-      state.data = latestData;
+      if (newDescription) {
+        const latestData = state.data.map((date) => {
+          if (date?.id === id) {
+            return {
+              ...date,
+              description: `${newDescription.name}, ${newDescription.amount}, ${newDescription.duration}`,
+              duration: selectedDuration,
+              amount: newDescription.amount,
+              totalAmount: newDescription.amount * selectedDuration,
+            };
+          } else {
+            return date;
+          }
+        });
+        state.data = latestData;
+      } else {
+        // Handle the case when newDescription is not found if needed
+        // For example, you might want to reset some fields or log an error
+      }
     },
     handleDecreasePage: (state, action) => {
         // const { newData } = action.payload
