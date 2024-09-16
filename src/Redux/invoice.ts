@@ -30,30 +30,36 @@ const initialState: State = {
   cart: [
     {
       id: 1,
+      name: "Select a bill",
+      duration: 0,
+      amount: 0,
+    },
+    {
+      id: 2,
       name: "Rema",
       duration: 50,
       amount: 3000,
     },
     {
-      id: 1,
+      id: 3,
       name: "Crayon",
       duration: 20,
       amount: 6000,
     },
     {
-      id: 1,
+      id: 4,
       name: "Ayra starr",
       duration: 60,
       amount: 2000,
     },
     {
-      id: 1,
+      id: 5,
       name: "Bleach",
       duration: 40,
       amount: 1000,
     },
     {
-      id: 1,
+      id: 6,
       name: "Macu",
       duration: 10,
       amount: 2000,
@@ -101,6 +107,7 @@ const dropDownSlice = createSlice({
       const newDescription = state.cart.find(
         (select) => select.name === selectedValue
       );
+      console.log("new description:", newDescription)
       if (newDescription) {
         const latestData = state.data.map((date) => {
           if (date?.id === id) {
@@ -123,16 +130,13 @@ const dropDownSlice = createSlice({
         state.tax = mainTax
         const mainTotal = state.tax + state.subTotal
         state.total = mainTotal
-      } else {
-        // Handle the case when newDescription is not found if needed
-        // For example, you might want to reset some fields or log an error
-      }
+      } 
     },
     handleDecreasePage: (state, action) => {
         // const { newData } = action.payload
         // console.log('decrease', action.payload)
         const newDuration = state.data.map(date=> {
-            const mainDuration = date.duration - 10;
+            const mainDuration = date.duration - date.currentDuration;
             const mainTotalAmount = date.amount * mainDuration;
           if(date.id === action.payload?.id){
             return(
@@ -153,8 +157,8 @@ const dropDownSlice = createSlice({
     handleIncreasePage: (state, action) => {
         // const { newData } = action.payload
         const newDuration = state.data.map(date=> {
-            const mainDuration = date.duration + 10;
-            const mainTotalAmount = date.amount * mainDuration
+          const mainDuration = date.duration + date.currentDuration;
+          const mainTotalAmount = date.amount * mainDuration
           if(date.id === action.payload?.id){
             return(
               {...date, duration: mainDuration, totalAmount: mainTotalAmount}
@@ -175,10 +179,16 @@ const dropDownSlice = createSlice({
     handleDeleteForm: (state, action) => {
         const newForm = state.data.filter(newData => newData.id !== action.payload)
         state.data = newForm
+    },
+    handleClearForm: (state) => {
+      state.data = []
+      state.tax = 0
+      state.subTotal = 0
+      state.total = 0
     }
   },
 });
 
-export const { handleNewFormData, handleSelectFormChange, handleDecreasePage, handleIncreasePage, handleDeleteForm } =
+export const { handleNewFormData, handleSelectFormChange, handleDecreasePage, handleIncreasePage, handleDeleteForm, handleClearForm } =
   dropDownSlice.actions;
 export default dropDownSlice.reducer;

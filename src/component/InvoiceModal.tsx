@@ -3,6 +3,7 @@ import { billed, service } from "../data/data";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../Redux/store";
 import {
+  handleClearForm,
   handleDecreasePage,
   handleDeleteForm,
   handleIncreasePage,
@@ -53,9 +54,14 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
   const handleIncrease = (newData: Data) => {
     dispatch(handleIncreasePage(newData));
     console.log(selectorSubTotal);
+    console.log("increase data:", newData)
   };
   const handleDelete = (id: number) => {
     dispatch(handleDeleteForm(id));
+  };
+  const handleClear = () => {
+    setClicked(!clicked)
+    dispatch(handleClearForm());
   };
 
   const handleSave = () => {
@@ -85,7 +91,7 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
               </button>
               <h1
                 className="cursor-pointer"
-                onClick={() => setClicked(!clicked)}
+                onClick={handleClear}
               >
                 &#10005;
               </h1>
@@ -142,12 +148,11 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
                           id="data"
                           className="w-full bg-white"
                         >
-                          <option>Select a bill</option>
                           {selector.map((select) => {
                             return (
                               <option id={select.name} value={select.name}>
-                                {select.name}, {select.amount},{" "}
-                                {select.duration}
+                                { select.name === "Select a bill" ? `${select.name}` : `${select.name}, ${select.amount},
+                                ${select.duration}`}
                               </option>
                             );
                           })}
@@ -157,17 +162,19 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
                         <button
                           className="w-[10%] bg-blue-800"
                           onClick={() => handleDecrease(newData)}
+                          disabled={newData.currentDuration <= 0}
                         >
                           -
                         </button>
                         <input
                           className="border-none outline-none w-[10%]"
                           type="number"
-                          value={newData?.duration ? newData?.duration : 0}
+                          value={newData?.description === "Select a bill" ? 0 : newData?.duration}
                         />
                         <button
                           className="w-[10%] bg-blue-800"
                           onClick={() => handleIncrease(newData)}
+                          disabled={newData.currentDuration <= 0}
                         >
                           +
                         </button>
@@ -221,7 +228,7 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
                   </button>
                   <h1
                     className="cursor-pointer"
-                    onClick={() => setClicked(!clicked)}
+                    onClick={handleClear}
                   >
                     &#10005;
                   </h1>
