@@ -169,7 +169,7 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
                         <input
                           className="border-none outline-none w-[10%]"
                           type="number"
-                          value={newData?.description === "Select a bill" ? 0 : newData?.duration}
+                          value={newData?.description === "Select a bill" ? 0 : newData?.duration.toLocaleString()}
                         />
                         <button
                           className="w-[10%] bg-blue-800"
@@ -180,7 +180,7 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
                         </button>
                       </th>
                       <th>
-                        <p>{newData.duration * newData.amount}</p>
+                        <p className="text-right mr-9">{newData.totalAmount.toLocaleString()}</p>
                       </th>
                       <th
                         onClick={() => handleDelete(newData.id)}

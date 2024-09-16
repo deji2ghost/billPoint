@@ -117,7 +117,8 @@ const dropDownSlice = createSlice({
               duration: selectedDuration,
               currentDuration: selectedDuration,
               amount: newDescription.amount,
-              totalAmount: newDescription.amount * selectedDuration,
+              // currentData: newDescription.amount,
+              totalAmount: newDescription.amount,
             };
           } else {
             return date;
@@ -137,7 +138,7 @@ const dropDownSlice = createSlice({
         // console.log('decrease', action.payload)
         const newDuration = state.data.map(date=> {
             const mainDuration = date.duration - date.currentDuration;
-            const mainTotalAmount = date.amount * mainDuration;
+            const mainTotalAmount = date.totalAmount + date.amount;
           if(date.id === action.payload?.id){
             return(
               {...date, duration: mainDuration, totalAmount: mainTotalAmount}
@@ -158,7 +159,7 @@ const dropDownSlice = createSlice({
         // const { newData } = action.payload
         const newDuration = state.data.map(date=> {
           const mainDuration = date.duration + date.currentDuration;
-          const mainTotalAmount = date.amount * mainDuration
+          const mainTotalAmount = date.totalAmount + date.amount
           if(date.id === action.payload?.id){
             return(
               {...date, duration: mainDuration, totalAmount: mainTotalAmount}
@@ -179,6 +180,12 @@ const dropDownSlice = createSlice({
     handleDeleteForm: (state, action) => {
         const newForm = state.data.filter(newData => newData.id !== action.payload)
         state.data = newForm
+        const mainSubTotal = state.data.reduce((acc, item) => acc + item.totalAmount, 0)
+        state.subTotal = mainSubTotal
+        const mainTax = state.subTotal * 0.05
+        state.tax = mainTax
+        const mainTotal = state.tax + state.subTotal
+        state.total = mainTotal
     },
     handleClearForm: (state) => {
       state.data = []
