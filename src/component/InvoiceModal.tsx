@@ -198,7 +198,7 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
               <div>
                 <div className="flex items-center justify-between">
                   <p>SubTotal:</p>
-                  <p>${selectorSubTotal}</p>
+                  <p>${selectorSubTotal.toLocaleString()}</p>
                 </div>
                 <div className="flex items-center justify-between">
                   <p>Discount:</p>
@@ -206,11 +206,11 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
                 </div>
                 <div className="flex items-center justify-between">
                   <p>Tax:(5%)</p>
-                  <p>${selectorTax}</p>
+                  <p>${selectorTax.toLocaleString()}</p>
                 </div>
                 <div className="flex items-center justify-between">
                   <p>Total</p>
-                  <p>${selectorTotal}</p>
+                  <p>${selectorTotal.toLocaleString()}</p>
                 </div>
               </div>
             </div>
@@ -281,7 +281,7 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
                           <th className="">{newData.description}</th>
                           <th>{newData.duration}seconds</th>
                           <th>
-                            <p>{newData.totalAmount}</p>
+                            <p className="text-left mr-9">{newData.totalAmount.toLocaleString()}</p>
                           </th>
                         </tr>
                       );
@@ -290,7 +290,7 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
                   <div>
                     <div className="flex items-center justify-between">
                       <p>SubTotal:</p>
-                      <p>${selectorSubTotal}</p>
+                      <p>${selectorSubTotal.toLocaleString()}</p>
                     </div>
                     <div className="flex items-center justify-between">
                       <p>Discount:</p>
@@ -298,11 +298,11 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
                     </div>
                     <div className="flex items-center justify-between">
                       <p>Tax:(5%)</p>
-                      <p>${selectorTax}</p>
+                      <p>${selectorTax.toLocaleString()}</p>
                     </div>
                     <div className="flex items-center justify-between">
                       <p>Total</p>
-                      <p>${selectorTotal}</p>
+                      <p>${selectorTotal.toLocaleString()}</p>
                     </div>
                   </div>
                 </div>
