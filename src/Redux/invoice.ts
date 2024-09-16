@@ -1,14 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 
-interface Data {
+interface Data{
     id: number;
     date: string;
     description: string;
     duration: number;
-    amount: number;
-    totalAmount: number;
-  }
+    currentDuration: number;
+    amount: number,
+    totalAmount: number
+}
   
   interface CartItem {
     id: number;
@@ -83,6 +84,7 @@ const dropDownSlice = createSlice({
             date: Today,
             description: "",
             duration: 0,
+            currentDuration: 0,
             amount: 0,
             totalAmount: 0,
           },
@@ -91,8 +93,8 @@ const dropDownSlice = createSlice({
       }
     },
     handleSelectFormChange: (state, action) => {
-      const { id, e } = action.payload;
-      const selectedValue = e.target.value;
+      const { id, event } = action.payload;
+      const selectedValue = event;
       const selectedDuration =
         state.cart.find((select) => select.name === selectedValue)?.duration ||
         0;
@@ -106,6 +108,7 @@ const dropDownSlice = createSlice({
               ...date,
               description: `${newDescription.name}, ${newDescription.amount}, ${newDescription.duration}`,
               duration: selectedDuration,
+              currentDuration: selectedDuration,
               amount: newDescription.amount,
               totalAmount: newDescription.amount * selectedDuration,
             };
@@ -114,6 +117,12 @@ const dropDownSlice = createSlice({
           }
         });
         state.data = latestData;
+        const mainSubTotal = state.data.reduce((total, item) => total + item.totalAmount, 0)
+        state.subTotal = mainSubTotal
+        const mainTax = state.subTotal * 0.05
+        state.tax = mainTax
+        const mainTotal = state.tax + state.subTotal
+        state.total = mainTotal
       } else {
         // Handle the case when newDescription is not found if needed
         // For example, you might want to reset some fields or log an error
@@ -123,39 +132,53 @@ const dropDownSlice = createSlice({
         // const { newData } = action.payload
         // console.log('decrease', action.payload)
         const newDuration = state.data.map(date=> {
+            const mainDuration = date.duration - 10;
+            const mainTotalAmount = date.amount * mainDuration;
           if(date.id === action.payload?.id){
             return(
-              {...date, duration: date.duration - 10, totalAmount: date.amount * date.duration}
+              {...date, duration: mainDuration, totalAmount: mainTotalAmount}
             )
           }else{
             return date
           }
         })
         state.data = newDuration
-        state.subTotal = state.data.reduce((total, item) => total + item.totalAmount, 0)
-        state.tax = state.subTotal * 0.05
-        state.total = state.tax + state.subTotal
+        const mainSubTotal = state.data.reduce((total, item) => total + item.totalAmount, 0)
+        state.subTotal = mainSubTotal
+        const mainTax = state.subTotal * 0.05
+        state.tax = mainTax
+        const mainTotal = state.tax + state.subTotal
+        state.total = mainTotal
     },
     handleIncreasePage: (state, action) => {
         // const { newData } = action.payload
         const newDuration = state.data.map(date=> {
-            if(date.id === action.payload?.id){
-              return(
-                {...date, duration: date.duration+= 10, totalAmount: date.amount * date.duration}
-              )
-            }else{
-              return date
-            }
-          })
-          state.data = newDuration
-          state.subTotal = state.data.reduce((total, item) => total + item.totalAmount, 0)
-          state.tax = state.subTotal * 0.05
-          state.total = state.tax + state.subTotal
+            const mainDuration = date.duration + 10;
+            const mainTotalAmount = date.amount * mainDuration
+          if(date.id === action.payload?.id){
+            return(
+              {...date, duration: mainDuration, totalAmount: mainTotalAmount}
+            )
+          }else{
+            return date
+          }
+        })
+        state.data = newDuration
+        const mainSubTotal = state.data.reduce((acc, item) => acc + item.totalAmount, 0)
+        state.subTotal = mainSubTotal
+        const mainTax = state.subTotal * 0.05
+        state.tax = mainTax
+        const mainTotal = state.tax + state.subTotal
+        state.total = mainTotal
 
     },
+    handleDeleteForm: (state, action) => {
+        const newForm = state.data.filter(newData => newData.id !== action.payload)
+        state.data = newForm
+    }
   },
 });
 
-export const { handleNewFormData, handleSelectFormChange, handleDecreasePage, handleIncreasePage } =
+export const { handleNewFormData, handleSelectFormChange, handleDecreasePage, handleIncreasePage, handleDeleteForm } =
   dropDownSlice.actions;
 export default dropDownSlice.reducer;
