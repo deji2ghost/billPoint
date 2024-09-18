@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import InvoiceModal from './component/InvoiceModal'
+import InvoicePage from './page/InvoicePage'
 
 function App() {
   const [ clicked, setClicked ] = useState(false)
@@ -9,6 +10,7 @@ function App() {
   return (
     <div className='bg-slate-50 h-screen text-white'>
       <button className='border-none outline-none bg-gray-300 p-2 mx-auto flex text-gray-700' onClick={() => setClicked(!clicked)} type='submit'>Click me for invoice</button>
+      <InvoicePage />
 
       {clicked ? <InvoiceModal clicked={clicked} setClicked={setClicked} /> : null}
     </div>

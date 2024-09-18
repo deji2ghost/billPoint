@@ -8,8 +8,11 @@ import {
   handleDeleteForm,
   handleIncreasePage,
   handleNewFormData,
+  handleSaveFullInvoice,
   handleSelectFormChange,
 } from "../Redux/invoice";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 interface clickedObject {
   clicked: boolean;
@@ -18,6 +21,7 @@ interface clickedObject {
 
 interface Data {
   id: number;
+  name: string;
   date: string;
   description: string;
   duration: number;
@@ -33,6 +37,7 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
   const selectorTax = useSelector((state: RootState) => state.tax);
   const selectorTotal = useSelector((state: RootState) => state.total);
   const [isLoading, setIsLoading] = useState(false);
+  const [detailsPage, setDetailsPage] = useState(false);
   const dispatch = useDispatch();
 
   const [dataSaved, setDataSaved] = useState<boolean>(true);
@@ -66,16 +71,41 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
 
   const handleSave = () => {
     console.log("saved");
-    setDataSaved(!dataSaved);
-    const switchLoading = dataSaved === true
-    console.log("switch loading:", switchLoading, dataSaved)
-    if (switchLoading) {
-      setTimeout(() => {
-        setIsLoading(true);
-        console.log("is loading:", isLoading)
-      }, 2000);
-    }
+    // setDataSaved(!dataSaved);
+    // const switchLoading = dataSaved === true
+    // console.log("switch loading:", switchLoading, dataSaved)
+    const cantSave = selectorData.find((item: Data) => item.name === "" || item.name === "Select a bill");
+      console.log("cant save:", cantSave);
+      if(cantSave){
+        console.log('wrong')
+        toast('You have to select an item. Select a bill is not selectable')
+        setDataSaved(true)
+      }
+      else if(selectorData.length < 1){
+        console.log('can not save')
+        toast('Select something else')
+        setDataSaved(true)
+      }else{
+        console.log('saved')
+        toast('successfully saved')
+        setDataSaved(false)
+        setTimeout(() => {
+          setIsLoading(true);
+          console.log("is loading:", isLoading)
+        }, 2000);
+        dispatch(handleSaveFullInvoice())
+      }
+
+    
   };
+
+  const handleDetails = () => {
+    setDetailsPage(!detailsPage)
+    console.log("details",detailsPage)
+    // if(detailsPage === false){
+
+    // }
+  }
   useEffect(() => {
     console.log(selectorData, selectorSubTotal);
   }, [selectorData]);
@@ -276,8 +306,8 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
                     </tr>
                     {selectorData.map((newData) => {
                       return (
-                        <tr key={newData.id}>
-                          <th>{newData.date}</th>
+                        <tr className="cursor-pointer" onClick={handleDetails} key={newData.id}>
+                          <th className="cursor-pointer">{newData.date}</th>
                           <th className="">{newData.description}</th>
                           <th>{newData.duration}seconds</th>
                           <th>
@@ -333,6 +363,7 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
           )}
         </>
       )}
+      <ToastContainer />
     </div>
   );
 };
