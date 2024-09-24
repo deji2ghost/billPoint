@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { billed, service } from "../data/data";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../Redux/store";
@@ -71,9 +71,6 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
 
   const handleSave = () => {
     console.log("saved");
-    // setDataSaved(!dataSaved);
-    // const switchLoading = dataSaved === true
-    // console.log("switch loading:", switchLoading, dataSaved)
     const cantSave = selectorData.find((item: Data) => item.name === "" || item.name === "Select a bill");
       console.log("cant save:", cantSave);
       if(cantSave){
@@ -102,13 +99,7 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
   const handleDetails = () => {
     setDetailsPage(!detailsPage)
     console.log("details",detailsPage)
-    // if(detailsPage === false){
-
-    // }
   }
-  useEffect(() => {
-    console.log(selectorData, selectorSubTotal);
-  }, [selectorData]);
   return (
     <div className="absolute top-0 left-0 h-screen w-full bg-slate-800 bg-opacity-60 ">
       {dataSaved ? (
@@ -253,9 +244,6 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
               <div className="absolute top-0 left-0 px-4 w-full flex items-center justify-between border-b border-gray-700 bg-slate-100">
                 <h1>Create new invoice for Emmanuel Afolabi</h1>
                 <div className="flex items-center justify-between">
-                  <button onClick={handleSave} className="bg-indigo-800">
-                    Save
-                  </button>
                   <h1
                     className="cursor-pointer"
                     onClick={handleClear}
@@ -344,7 +332,7 @@ const InvoiceModal = ({ clicked, setClicked }: clickedObject) => {
                 <h1>Create new invoice for Emmanuel Afolabi</h1>
                 <div className="flex items-center justify-between">
                   <button onClick={handleSave} className="bg-indigo-800">
-                    Save
+                    Loading...
                   </button>
                   <h1
                     className="cursor-pointer"
