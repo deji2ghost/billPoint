@@ -340,9 +340,6 @@ const dropDownSlice = createSlice({
       })
       state.fullInvoiceData = newForm
     },
-    updateEditFormData: (state, action) => {
-      console.log(action.payload);
-    },
     handleEditIncreasePage: (state, action) => {
       const { newData, id } = action.payload;
       console.log(newData, id);
@@ -503,7 +500,6 @@ export const {
   handleClearForm,
   handleSaveFullInvoice,
   handleNewEditFormData,
-  updateEditFormData,
   handleEditIncreasePage,
   handleEditDecreasePage,
   handleEditSelectFormChange,
