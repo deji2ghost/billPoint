@@ -10,7 +10,7 @@ const InvoicePage = () => {
   const [showModal, setShowModal] = useState(false);
   const [options, setOptions] = useState<string | null>(null);
   const invoice = useSelector((state: RootState) => state.fullInvoiceData);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   console.log(invoice);
   const detailPage = (id: string) => {
     console.log("clicked", id);
@@ -26,74 +26,84 @@ const InvoicePage = () => {
   };
 
   const optionsDropdown = (id: string) => {
-    setOptions(options === id ? null : id)
-  }
+    setOptions(options === id ? null : id);
+  };
   useEffect(() => {
     console.log(invoice);
   }, [invoice]);
 
   const handleDelete = (id: string) => {
-    console.log(id)
-    dispatch(handleDeleteInvoice(id))
-  }
+    console.log(id);
+    dispatch(handleDeleteInvoice(id));
+  };
 
   return (
     <div className="text-black">
       <table className="border w-full">
-        <tr>
-          <th>Invoice ID</th>
-          <th>Details</th>
-          <th>Date</th>
-          <th>Fee</th>
-          <th>Paid</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-        {invoice && invoice?.map((data) => {
-          return (
-            <tr
-              key={data?.id}
-              // onClick={() => detailPage(data.id)}
-              className="cursor-pointer"
-            >
-              <th>{data?.id}</th>
-              {data?.items.map((ownData) => {
-                return (
-                  <th
-                    onClick={() => detailPage(data.id)}
-                    className="flex flex-col"
-                  >
-                    <p>{ownData?.name}</p>
-                  </th>
-                );
-              })}
-              <th onClick={() => detailPage(data?.id)}>{data.date}</th>
-              <th onClick={() => detailPage(data?.id)}>
-                {data?.mainTotalAmount}
-              </th>
-              <th onClick={() => detailPage(data?.id)}>{data.paid}</th>
-              <th onClick={() => detailPage(data?.id)}>
-                {data.stat ? "paid" : "unpaid"}
-              </th>
-              <th className="items-center justify-between text-black border">
-                <button
-                  onClick={() => optionsDropdown(data?.id)}
-                  className="items-center justify-center mx-auto"
+        <thead className="bg-gray-400 text-left">
+          <tr className="">
+            <th>Invoice ID</th>
+            <th>Details</th>
+            <th>Date</th>
+            <th>Fee</th>
+            <th>Paid</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody className="text-left">
+          {invoice &&
+            invoice?.map((data) => {
+              return (
+                <tr
+                  key={data?.id}
+                  // onClick={() => detailPage(data.id)}
+                  className="cursor-pointer text-gray-700 border-y"
                 >
-                  &#8942;
-                </button>
-                <ul
-                  className={`${
-                    options === data.id ? "block" : "hidden"
-                  } absolute w- left- bg-slate-500 p-3 flex-col `}
-                >
-                  <EditInvoice data={data}/>
-                  <li onClick={()=> handleDelete(data.id)}>Delete Invoice</li>
-                </ul>
-              </th>
-            </tr>
-          );
-        })}
+                  <th className="text-indigo-900">{data?.id}</th>
+                  {data?.items.map((ownData) => {
+                    return (
+                      <td
+                        onClick={() => detailPage(data.id)}
+                        className="flex flex-col"
+                      >
+                        {ownData?.name}
+                      </td>
+                    );
+                  })}
+                  <td onClick={() => detailPage(data?.id)}>{data.date}</td>
+                  <td onClick={() => detailPage(data?.id)}>
+                    {data?.mainTotalAmount}
+                  </td>
+                  <td onClick={() => detailPage(data?.id)}>{data.paid}</td>
+                  <td onClick={() => detailPage(data?.id)}>
+                    <p className={`${data.stat ? 'bg-green-100 text-green-600' : 'bg-red-50 text-red-600'} w-[40%] text-center rounded-md`}>{data.stat ? "paid" : "unpaid"}</p>
+                  </td>
+                  <td className="relative">
+                    <button
+                      onClick={() => optionsDropdown(data?.id)}
+                      className="items-center justify-center mx-auto text-xl font-black"
+                    >
+                      &#8942;
+                    </button>
+                    <ul
+                      className={`${
+                        options === data.id ? "block" : "hidden"
+                      } absolute left-0 right-0 mx-auto bg-white w-[90%] z-50`}
+                    >
+                      <EditInvoice data={data} />
+                      <li
+                        onClick={() => handleDelete(data.id)}
+                        className="font-medium text-[15px] p-2 hover:bg-slate-100"
+                      >
+                        DELETE INVOICE
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+              );
+            })}
+        </tbody>
       </table>
 
       {showModal ? (

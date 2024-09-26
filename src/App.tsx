@@ -9,12 +9,12 @@ function App() {
   console.log('clicked data:', clicked)
 
   return (
-    <div className='bg-slate-50 text-white flex items-start justify-normal min-h-screen'>
-      <div className='w-[20%] h-screen bg-blue-800 pl-4'>
+    <div className='bg-slate-50 text-white flex items-start justify-normal min-h-screen overflow-hidden'>
+      <div className='w-[20%] h-screen bg-indigo-900 pl-4'>
         <SideNav />
       </div>
-      <div className='w-full pr-4'>
-        <button className='border-none outline-none bg-gray-300 p-2 mx-auto flex text-gray-700' onClick={() => setClicked(!clicked)} type='submit'>Click me for invoice</button>
+      <div className='w-full pr-4 mt-2'>
+        <button className='border-none outline-none bg-transparent p-2 text-indigo-900 w-[18%] ml-[920px] font-bold' onClick={() => setClicked(!clicked)} type='submit'>+ Click me for invoice</button>
         <InvoicePage />
       </div>
 

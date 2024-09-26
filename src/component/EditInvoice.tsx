@@ -1,5 +1,13 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { Data, fullInvoice, FullInvoiceData, handleEditDecreasePage, handleEditIncreasePage, handleEditSelectFormChange, handleNewEditFormData } from "../Redux/invoice";
+import {
+  Data,
+  fullInvoice,
+  FullInvoiceData,
+  handleEditDecreasePage,
+  handleEditIncreasePage,
+  handleEditSelectFormChange,
+  handleNewEditFormData,
+} from "../Redux/invoice";
 import { useDispatch, useSelector } from "react-redux";
 import { billed, service } from "../data/data";
 import { RootState } from "../Redux/store";
@@ -13,7 +21,9 @@ const EditInvoice = ({ data }: PropsData) => {
   const [updateSaved, setUpdateSaved] = useState(false);
   const selector = useSelector((state: RootState) => state.cart);
   const selectorSubTotal = useSelector((state: RootState) => state.subTotal);
-  const selectorInvoice = useSelector((state: RootState) => state.fullInvoiceData);
+  const selectorInvoice = useSelector(
+    (state: RootState) => state.fullInvoiceData
+  );
   const dispatch = useDispatch();
 
   const handleEditSelectChange = (
@@ -22,21 +32,21 @@ const EditInvoice = ({ data }: PropsData) => {
   ) => {
     const event = e.target.value;
     console.log(event, data.id);
-    const id = data.id
+    const id = data.id;
     dispatch(handleEditSelectFormChange({ newData, id, event }));
   };
 
   const handleEditIncrease = (newData: Data) => {
-    const id = data.id
-    dispatch(handleEditIncreasePage({newData, id}));
+    const id = data.id;
+    dispatch(handleEditIncreasePage({ newData, id }));
     console.log(selectorSubTotal);
-    console.log("edit increase data:", newData)
+    console.log("edit increase data:", newData);
   };
   const handleEditDecrease = (newData: Data) => {
-    const id = data.id
-    dispatch(handleEditDecreasePage({newData, id}));
+    const id = data.id;
+    dispatch(handleEditDecreasePage({ newData, id }));
     console.log(selectorSubTotal);
-    console.log("edit increase data:", newData)
+    console.log("edit increase data:", newData);
   };
 
   const handleUpdate = (id: string) => {
@@ -44,17 +54,19 @@ const EditInvoice = ({ data }: PropsData) => {
     setUpdateSaved(!updateSaved);
     // const switchLoading = updateSaved === true
     // console.log("switch loading:", switchLoading, updateSaved)
-    const cantUpdate = selectorInvoice.map(invoice => {
-        if(invoice.id === id){
-            return(
-                {...invoice, items:invoice.items.find(inItems=> inItems.name === '' || "Select a bill")}
-            )
-        }else{
-            return invoice
-        }
-    })
-    console.log(cantUpdate)
-    
+    const cantUpdate = selectorInvoice.map((invoice) => {
+      if (invoice.id === id) {
+        return {
+          ...invoice,
+          items: invoice.items.find(
+            (inItems) => inItems.name === "" || "Select a bill"
+          ),
+        };
+      } else {
+        return invoice;
+      }
+    });
+    console.log(cantUpdate);
   };
 
   const handleClear = () => {
@@ -64,28 +76,32 @@ const EditInvoice = ({ data }: PropsData) => {
 
   const handleNewEditData = (id: string) => {
     dispatch(handleNewEditFormData(id));
-    console.log("new:", selectorInvoice)
+    console.log("new:", selectorInvoice);
   };
   useEffect(() => {
-    console.log(selectorInvoice)
-  }, [selectorInvoice])
+    console.log(selectorInvoice);
+  }, [selectorInvoice]);
   return (
-    <div>
+    <div className="p-2 hover:bg-slate-100">
       <li
         onClick={() => {
           console.log("clicked");
           setShowEditModal(!showEditModal);
-          console.log(showEditModal)
+          console.log(showEditModal);
         }}
+        className="font-medium text-[15px]"
       >
-        Edit Invoice
+        EDIT INVOICE
       </li>
       {showEditModal ? (
         <div className="fixed left-0 right-0 w-[80%] mx-auto bg-slate-100 text-black py-2 px-4 rounded-md h-[384px] top-1/2 -translate-y-1/2">
           <div className="absolute top-0 left-0 px-4 w-full flex items-center justify-between border-b border-gray-700 bg-slate-100">
             <h1>Edit invoice for Emmanuel Afolabi</h1>
             <div className="flex items-center justify-between">
-              <button onClick={()=>handleUpdate(data.id)} className="bg-indigo-800">
+              <button
+                onClick={() => handleUpdate(data.id)}
+                className="bg-indigo-800"
+              >
                 Update
               </button>
               <h1 className="cursor-pointer" onClick={handleClear}>
@@ -94,7 +110,7 @@ const EditInvoice = ({ data }: PropsData) => {
             </div>
           </div>
           <div className="bg-gray-300 py-7 px-3 ">
-            <div className="bg-slate-50 px-4 py-2 h-[300px] overflow-y-scroll">
+            <div className="bg-slate-50 px-4 py-2 h-[300px] overflow-y-scroll auto">
               <h1>Invoice</h1>
               <div className="border-b border-gray-700">
                 <div>
@@ -140,7 +156,7 @@ const EditInvoice = ({ data }: PropsData) => {
                       <th>{newData.date}</th>
                       <th className="">
                         <select
-                          onChange={(e) => handleEditSelectChange( newData, e)}
+                          onChange={(e) => handleEditSelectChange(newData, e)}
                           id="data"
                           className="w-full bg-white"
                         >
@@ -148,22 +164,25 @@ const EditInvoice = ({ data }: PropsData) => {
                             {newData.description}
                           </option>
                           {selector
-                          .filter(select => select.name !== "Select a bill")
-                          .map((select) => {
-                            return (
-                              <option id={select.name} value={select.name}>
-                                {`${select.name}, ${select.amount},
+                            .filter((select) => select.name !== "Select a bill")
+                            .map((select) => {
+                              return (
+                                <option id={select.name} value={select.name}>
+                                  {`${select.name}, ${select.amount},
                                 ${select.duration}`}
-                              </option>
-                            );
-                          })}
+                                </option>
+                              );
+                            })}
                         </select>
                       </th>
                       <th>
                         <button
                           className="w-[10%] bg-blue-800"
-                            onClick={() => handleEditDecrease(newData)}
-                          disabled={newData.currentDuration <= 0 || newData.duration  <= newData.currentDuration}
+                          onClick={() => handleEditDecrease(newData)}
+                          disabled={
+                            newData.currentDuration <= 0 ||
+                            newData.duration <= newData.currentDuration
+                          }
                         >
                           -
                         </button>
@@ -171,12 +190,14 @@ const EditInvoice = ({ data }: PropsData) => {
                           className="border-none outline-none w-[10%]"
                           type="number"
                           value={
-                            newData?.description === "Select a bill" ? 0 : newData?.duration.toLocaleString()
+                            newData?.description === "Select a bill"
+                              ? 0
+                              : newData?.duration.toLocaleString()
                           }
                         />
                         <button
                           className="w-[10%] bg-blue-800"
-                            onClick={() => handleEditIncrease(newData)}
+                          onClick={() => handleEditIncrease(newData)}
                           disabled={newData.currentDuration <= 0}
                         >
                           +
@@ -197,7 +218,10 @@ const EditInvoice = ({ data }: PropsData) => {
                   );
                 })}
               </table>
-              <button className="text-indigo-500" onClick={()=>handleNewEditData(data.id)}>
+              <button
+                className="text-indigo-500"
+                onClick={() => handleNewEditData(data.id)}
+              >
                 Add new line
               </button>
               <div>

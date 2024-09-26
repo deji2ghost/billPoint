@@ -306,7 +306,7 @@ const dropDownSlice = createSlice({
           mainTotalAmount: state.total,
           tax: state.tax,
           paid: 0,
-          stat: true,
+          stat: false,
           items: [...state.data],
         },
       ];
@@ -443,7 +443,7 @@ const dropDownSlice = createSlice({
             return {
               ...newInvoice,
               items: newInvoice.items.map((newItems) => {
-                if (newItems.id === newData.id) {
+                if (newItems.id === newData?.id) {
                   return {
                     ...newItems,
                     description: `${newDescription.name}, ${newDescription.amount}, ${newDescription.duration}`,
@@ -462,6 +462,7 @@ const dropDownSlice = createSlice({
             return newInvoice
           }
         });
+        // state.fullInvoiceData = newSelectInvoice
         const newSubTotal = newSelectInvoice.map((newData) => {
           if (newData.id === id) {
             const newSubTotal = newData.items.reduce(
