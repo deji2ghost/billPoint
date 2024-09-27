@@ -329,7 +329,7 @@ const dropDownSlice = createSlice({
         const newSubTotal = newSelectInvoice.map((newData) => {
           if (newData.id === id) {
             const newSubTotal = newData.items.reduce(
-              (total, item) => total + item.totalAmount,
+              (total: number, item: fullInvoice) => total + item.totalAmount,
               0
             );
             const newTax = newSubTotal * 0.05;
