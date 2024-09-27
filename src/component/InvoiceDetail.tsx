@@ -24,90 +24,104 @@ const InvoiceDetail = ({ loading, setShowModal, showModal }: Loading) => {
     console.log(dataObject);
   }, [dataObject]);
   return (
-    <div className="relative w-[80%] mx-auto bg-slate-50 text-black py-2 px-4 rounded-md h-[384px] top-1/2 -translate-y-1/2">
-      <div className="absolute top-0 left-0 px-4 w-full flex items-center justify-between border-b border-gray-700 bg-slate-100">
+    <div className="relative w-[80%] mx-auto bg-slate-50 text-black py-2 px-4 rounded-md h-[400px] top-1/2 -translate-y-1/2">
+      <div className="absolute top-0 left-0 px-4 py-2 w-full flex items-center justify-between drop-shadow-md bg-slate-100">
         <h1>New invoice details</h1>
-        <h1 onClick={()=> setShowModal(!showModal)} className="cursor-pointer">&#10005;</h1>
+        <h1
+          onClick={() => setShowModal(!showModal)}
+          className="cursor-pointer py-2"
+        >
+          &#10005;
+        </h1>
       </div>
       {loading ? (
         <p className="text-center mt-32">Your Invoice details is loading...</p>
       ) : (
-        <div className="bg-gray-300 py-7 px-3 ">
+        <div className="bg-gray-300 py-3 px-3 mt-12">
           <div className="bg-slate-50 px-4 py-2 h-[300px] overflow-y-scroll">
-            <h1>Invoice</h1>
-            <div className="border-b border-gray-700">
+            <h1 className="text-5xl">Invoice</h1>
+            <div className="border-b-8 border-gray-600 pb-9">
               <div>
                 <p>Date:</p>
-                <p>04 Jul, 2024</p>
+                <p className="font-medium">04 Jul, 2024</p>
               </div>
               <div className="flex gap-28">
                 <div className="">
                   <div>
                     <p>Billed From:</p>
-                    <p>{billed.billedFrom}</p>
+                    <p className="font-medium">{billed.billedFrom}</p>
                   </div>
                   <div>
                     <p>Service Provider:</p>
-                    <p>{service.serviceProviderPlace}</p>
-                    <p>{service.serviceProviderLocation}</p>
-                    <p>{service.serviceProviderNumber}</p>
+                    <p className="font-medium">
+                      {service.serviceProviderPlace}
+                    </p>
+                    <p className="font-medium">
+                      {service.serviceProviderLocation}
+                    </p>
+                    <p className="font-medium">
+                      {service.serviceProviderNumber}
+                    </p>
                   </div>
                 </div>
                 <div className="">
                   <div>
                     <p>Billed To:</p>
-                    <p>{billed.billedTo}</p>
+                    <p className="font-medium">{billed.billedTo}</p>
                   </div>
                   <div>
                     <p>Patient Details:</p>
-                    <p>{service.patientDetails}</p>
+                    <p className="font-medium">{service.patientDetails}</p>
                   </div>
                 </div>
               </div>
             </div>
-            <table className="border w-full text-left">
-              <tr className="">
-                <th>Date</th>
-                <th>Description</th>
-                <th>Duration</th>
-                <th>Amount</th>
-                {/* <th>Del</th> */}
-              </tr>
+            <table className="w-full my-5">
+              <thead className="text-left ">
+                <tr className="">
+                  <th className="">Date</th>
+                  <th className="">Description</th>
+                  <th className="">Duration</th>
+                  <th className="">Amount</th>
+                </tr>
+              </thead>
               {dataObject?.items.map((item) => {
                 return (
-                  <tr key={item.id}>
-                    <th>{item.date}</th>
-                    <th className="">{item.name}</th>
-                    <th>{item.duration}</th>
-                    <th>
-                      <p className="text-right mr-9">{item.totalAmount}</p>
-                    </th>
-                    {/* <th
-                      onClick={() => handleDelete(item.id)}
-                      className="cursor-pointer"
-                    >
-                      <p>&#10005;</p>
-                    </th> */}
+                  <tr
+                    className="border-b border-gray-600 items-center"
+                    key={item.id}
+                  >
+                    <td className=" w-[15%]">{item.date}</td>
+                    <td className=" w-[15%] py-7">{item.name}seconds</td>
+                    <td className=" w-[15%]">
+                    {item.duration}seconds
+                    </td>
+                    <td className=" w-[15%]">
+                      <p className="">{item.totalAmount.toLocaleString()}</p>
+                    </td>
                   </tr>
                 );
               })}
             </table>
-            <div>
-              <div className="flex items-center justify-between">
+
+            <div className="flex flex-col items-end gap-3 mt-5 font-bold">
+              <div className="flex items-center justify-between w-[50%]">
                 <p>SubTotal:</p>
-                <p>${dataObject?.subTotalAmount}</p>
+                <p>${dataObject?.subTotalAmount.toLocaleString()}</p>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between w-[50%]">
                 <p>Discount:</p>
                 <p>0</p>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between w-[50%]">
                 <p>Tax:(5%)</p>
-                <p>${dataObject?.tax}</p>
+                <p>${dataObject?.tax.toLocaleString()}</p>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between w-[50%] border-t border-gray-600">
                 <p>Total</p>
-                <p>${dataObject?.mainTotalAmount}</p>
+                <p className="text-2xl">
+                  ${dataObject?.mainTotalAmount.toLocaleString()}
+                </p>
               </div>
             </div>
           </div>

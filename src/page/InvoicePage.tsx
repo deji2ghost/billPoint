@@ -5,10 +5,14 @@ import InvoiceDetail from "../component/InvoiceDetail";
 import EditInvoice from "../component/EditInvoice";
 import { handleDeleteInvoice } from "../Redux/invoice";
 
-const InvoicePage = () => {
+interface Props{
+  options: string | null;
+  setOptions: React.Dispatch<React.SetStateAction<string | null>>;
+}
+const InvoicePage = ({options, setOptions}: Props) => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [options, setOptions] = useState<string | null>(null);
+  // const [options, setOptions] = useState<string | null>(null);
   const invoice = useSelector((state: RootState) => state.fullInvoiceData);
   const dispatch = useDispatch();
   console.log(invoice);
@@ -40,7 +44,7 @@ const InvoicePage = () => {
   return (
     <div className="text-black">
       <table className="border w-full">
-        <thead className="bg-gray-400 text-left">
+        <thead onClick={()=> setOptions(null)} className="bg-gray-400 text-left">
           <tr className="">
             <th>Invoice ID</th>
             <th>Details</th>
@@ -71,12 +75,24 @@ const InvoicePage = () => {
                       </td>
                     );
                   })}
-                  <td onClick={() => detailPage(data?.id)}>{data.date}</td>
-                  <td onClick={() => detailPage(data?.id)}>
+                  <td onClick={() =>{
+                    setOptions(null);
+                    detailPage(data?.id)
+                    }}>{data.date}</td>
+                  <td onClick={() =>{
+                    setOptions(null);
+                    detailPage(data?.id)
+                    }}>
                     {data?.mainTotalAmount}
                   </td>
-                  <td onClick={() => detailPage(data?.id)}>{data.paid}</td>
-                  <td onClick={() => detailPage(data?.id)}>
+                  <td onClick={() =>{
+                    setOptions(null);
+                    detailPage(data?.id)
+                    }}>{data.paid}</td>
+                  <td onClick={() =>{
+                    setOptions(null);
+                    detailPage(data?.id)
+                    }}>
                     <p className={`${data.stat ? 'bg-green-100 text-green-600' : 'bg-red-50 text-red-600'} w-[40%] text-center rounded-md`}>{data.stat ? "paid" : "unpaid"}</p>
                   </td>
                   <td className="relative">
@@ -86,19 +102,19 @@ const InvoicePage = () => {
                     >
                       &#8942;
                     </button>
-                    <ul
+                    <div
                       className={`${
                         options === data.id ? "block" : "hidden"
-                      } absolute left-0 right-0 mx-auto bg-white w-[90%] z-50`}
+                      } absolute right-16 bg-white w-[90%] z-50 `}
                     >
                       <EditInvoice data={data} />
-                      <li
+                      <button
                         onClick={() => handleDelete(data.id)}
-                        className="font-medium text-[15px] p-2 hover:bg-slate-100"
+                        className="font-medium text-[15px] p-2 w-full hover:bg-slate-100"
                       >
                         DELETE INVOICE
-                      </li>
-                    </ul>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );

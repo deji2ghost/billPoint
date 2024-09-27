@@ -11,7 +11,7 @@ export interface Data {
   totalAmount: number;
 }
 
-interface CartItem {
+export interface CartItem {
   id: number;
   name: string;
   duration: number;
@@ -311,157 +311,20 @@ const dropDownSlice = createSlice({
         },
       ];
     },
-    handleNewEditFormData: (state, action) => {
+    handleUpdateChange: (state, action) => {
       console.log(action.payload);
-      const date = new Date().getDate();
-      const month = new Date().getMonth();
-      const year = new Date().getFullYear();
-      const Today = `${date} - ${month} - ${year}`;
-      const findObj = state.fullInvoiceData.find(full => full.id === action.payload);
-      const newId = findObj?.items?.length ?? 0 + 1
-      console.log("newId:", newId)
-      const newForm = state.fullInvoiceData.map(newInvoice => {
-        if(newInvoice.id === action.payload){
-          return(
-            {...newInvoice, items: [...newInvoice.items, {
-              id: newId,
-              name: "",
-              date: Today,
-              description: "",
-              duration: 0,
-              currentDuration: 0,
-              amount: 0,
-              totalAmount: 0,
-            },]}
-          )
-        }else{
-          return newInvoice
-        }
-      })
-      state.fullInvoiceData = newForm
-    },
-    handleEditIncreasePage: (state, action) => {
-      const { newData, id } = action.payload;
-      console.log(newData, id);
-      const newInvoice = state.fullInvoiceData.map((invoice) => {
-        if (invoice.id === id) {
-          return {
-            ...invoice,
-            items: invoice.items.map((item) => {
-              if (item.id === newData.id) {
-                const mainDuration = item.duration + item.currentDuration;
-                const mainTotalAmount = item.totalAmount + item.amount;
-                return {
-                  ...item,
-                  duration: mainDuration,
-                  totalAmount: mainTotalAmount,
-                };
-              } else {
-                return item;
-              }
-            }),
-          };
-        } else {
-          return invoice;
-        }
-      });
-      const newSubTotal = newInvoice.map((newData) => {
-        if (newData.id === id) {
-          const newSubTotal = newData.items.reduce(
-            (total, item) => total + item.totalAmount,
-            0
-          );
-          const newTax = newSubTotal * 0.05;
-          const newMainTotal = newSubTotal + newTax;
-          return {
-            ...newData,
-            subTotalAmount: newSubTotal,
-            tax: newTax,
-            mainTotalAmount: newMainTotal,
-          };
-        } else {
-          return newData;
-        }
-      });
-      state.fullInvoiceData = newSubTotal;
-    },
-    handleEditDecreasePage: (state, action) => {
-      const { newData, id } = action.payload;
-      console.log(newData, id);
-      const newInvoice = state.fullInvoiceData.map((invoice) => {
-        if (invoice.id === id) {
-          return {
-            ...invoice,
-            items: invoice.items.map((item) => {
-              if (item.id === newData.id) {
-                const mainDuration = item.duration - item.currentDuration;
-                const mainTotalAmount = item.totalAmount - item.amount;
-                return {
-                  ...item,
-                  duration: mainDuration,
-                  totalAmount: mainTotalAmount,
-                };
-              } else {
-                return item;
-              }
-            }),
-          };
-        } else {
-          return invoice;
-        }
-      });
-      const newSubTotal = newInvoice.map((newData) => {
-        if (newData.id === id) {
-          const newSubTotal = newData.items.reduce(
-            (total, item) => total + item.totalAmount,
-            0
-          );
-          const newTax = newSubTotal * 0.05;
-          const newMainTotal = newSubTotal + newTax;
-          return {
-            ...newData,
-            subTotalAmount: newSubTotal,
-            tax: newTax,
-            mainTotalAmount: newMainTotal,
-          };
-        } else {
-          return newData;
-        }
-      });
-      state.fullInvoiceData = newSubTotal;
-    },
-    handleEditSelectFormChange: (state, action) => {
-      const { newData, id, event } = action.payload;
-      console.log(newData, id, event);
-      const selectedValue = event
-      const selectedDuration =
-        state.cart.find((select) => select.name === selectedValue)?.duration || 0;
-      const newDescription = state.cart.find((select) => select.name === selectedValue)
-      if(newDescription){
+      const { id, tempData } = action.payload
+      console.log( id, tempData)
+      if(id){
         const newSelectInvoice = state.fullInvoiceData.map((newInvoice) => {
-          if (newInvoice.id === id) {
-            return {
-              ...newInvoice,
-              items: newInvoice.items.map((newItems) => {
-                if (newItems.id === newData?.id) {
-                  return {
-                    ...newItems,
-                    description: `${newDescription.name}, ${newDescription.amount}, ${newDescription.duration}`,
-                    duration: selectedDuration,
-                    name: newDescription.name,
-                    currentDuration: selectedDuration,
-                    amount: newDescription.amount,
-                    totalAmount: newDescription.amount,
-                  };
-                }else{
-                  return newItems
-                }
-              }),
-            };
+          if(newInvoice.id === id){
+            return(
+              {...tempData}
+            )
           }else{
             return newInvoice
           }
-        });
+        })
         // state.fullInvoiceData = newSelectInvoice
         const newSubTotal = newSelectInvoice.map((newData) => {
           if (newData.id === id) {
@@ -500,10 +363,7 @@ export const {
   handleDeleteForm,
   handleClearForm,
   handleSaveFullInvoice,
-  handleNewEditFormData,
-  handleEditIncreasePage,
-  handleEditDecreasePage,
-  handleEditSelectFormChange,
+  handleUpdateChange,
   handleDeleteInvoice,
 } = dropDownSlice.actions;
 export default dropDownSlice.reducer;

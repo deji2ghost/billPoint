@@ -3,15 +3,14 @@ import {
   Data,
   fullInvoice,
   FullInvoiceData,
-  handleEditDecreasePage,
-  handleEditIncreasePage,
-  handleEditSelectFormChange,
-  handleNewEditFormData,
+  handleUpdateChange,
 } from "../Redux/invoice";
 import { useDispatch, useSelector } from "react-redux";
 import { billed, service } from "../data/data";
 import { RootState } from "../Redux/store";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 interface PropsData {
   data: FullInvoiceData;
@@ -19,8 +18,9 @@ interface PropsData {
 const EditInvoice = ({ data }: PropsData) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [updateSaved, setUpdateSaved] = useState(false);
+  const [tempData, setTempData] = useState(data);
   const selector = useSelector((state: RootState) => state.cart);
-  const selectorSubTotal = useSelector((state: RootState) => state.subTotal);
+  // const selectorSubTotal = useSelector((state: RootState) => state.subTotal);
   const selectorInvoice = useSelector(
     (state: RootState) => state.fullInvoiceData
   );
@@ -31,42 +31,71 @@ const EditInvoice = ({ data }: PropsData) => {
     e: ChangeEvent<HTMLSelectElement>
   ) => {
     const event = e.target.value;
-    console.log(event, data.id);
-    const id = data.id;
-    dispatch(handleEditSelectFormChange({ newData, id, event }));
+    const updatedItems = tempData.items.map((item) => {
+      if (item.id === newData.id) {
+        const selectedItem = selector.find((select) => select.name === event);
+        if (selectedItem) {
+          return {
+            ...item,
+            description: `${selectedItem.name}, ${selectedItem.amount}, ${selectedItem.duration}`,
+            duration: selectedItem.duration,
+            name: selectedItem.name,
+            currentDuration: selectedItem.duration,
+            amount: selectedItem.amount,
+            totalAmount: selectedItem.amount,
+          };
+        }
+      }
+      return item;
+    });
+
+    setTempData({ ...tempData, items: updatedItems });
   };
 
   const handleEditIncrease = (newData: Data) => {
-    const id = data.id;
-    dispatch(handleEditIncreasePage({ newData, id }));
-    console.log(selectorSubTotal);
-    console.log("edit increase data:", newData);
+    const updatedItems = tempData.items.map((item) => {
+      if (item.id === newData.id) {
+        const mainDuration = item.duration + item.currentDuration;
+        const mainTotalAmount = item.totalAmount + item.amount;
+        return {
+          ...item,
+          duration: mainDuration,
+          totalAmount: mainTotalAmount,
+        };
+      }
+      return item;
+    });
+    setTempData({ ...tempData, items: updatedItems });
   };
   const handleEditDecrease = (newData: Data) => {
-    const id = data.id;
-    dispatch(handleEditDecreasePage({ newData, id }));
-    console.log(selectorSubTotal);
-    console.log("edit increase data:", newData);
+    const updatedItems = tempData.items.map((item) => {
+      if (item.id === newData.id) {
+        const mainDuration = item.duration - item.currentDuration;
+        const mainTotalAmount = item.totalAmount - item.amount;
+        return {
+          ...item,
+          duration: mainDuration,
+          totalAmount: mainTotalAmount,
+        };
+      }
+      return item;
+    });
+    setTempData({ ...tempData, items: updatedItems });
   };
 
-  const handleUpdate = (id: string) => {
+  const handleUpdate = (id: string, tempData: FullInvoiceData) => {
     console.log("update", id);
     setUpdateSaved(!updateSaved);
-    // const switchLoading = updateSaved === true
-    // console.log("switch loading:", switchLoading, updateSaved)
-    const cantUpdate = selectorInvoice.map((invoice) => {
-      if (invoice.id === id) {
-        return {
-          ...invoice,
-          items: invoice.items.find(
-            (inItems) => inItems.name === "" || "Select a bill"
-          ),
-        };
-      } else {
-        return invoice;
-      }
-    });
-    console.log(cantUpdate);
+    const cantUpdate = tempData.items.find((invoice) => invoice.name === '' || invoice.name === "Select a bill");
+    console.log(cantUpdate)
+    if(cantUpdate){
+      toast('cant update')
+      console.log('no update')
+    }else{
+      toast('Success')
+      console.log('success')
+      dispatch(handleUpdateChange({id, tempData}))
+    }
   };
 
   const handleClear = () => {
@@ -74,32 +103,47 @@ const EditInvoice = ({ data }: PropsData) => {
     setShowEditModal(!showEditModal);
   };
 
-  const handleNewEditData = (id: string) => {
-    dispatch(handleNewEditFormData(id));
-    console.log("new:", selectorInvoice);
+  const handleNewEditData = () => {
+    const newId = (tempData.items.length ?? 0) + 1;
+    const today = new Date().toLocaleDateString();
+    const newItem = {
+      id: newId,
+      name: "",
+      date: today,
+      description: "",
+      duration: 0,
+      currentDuration: 0,
+      amount: 0,
+      totalAmount: 0,
+    };
+    setTempData({ ...tempData, items: [...tempData.items, newItem] });
+    // console.log(id)
+    // dispatch(handleNewEditFormData(id));
+    // console.log("new:", selectorInvoice);
   };
   useEffect(() => {
     console.log(selectorInvoice);
-  }, [selectorInvoice]);
+    console.log(tempData);
+  }, [selectorInvoice, tempData]);
   return (
-    <div className="p-2 hover:bg-slate-100">
-      <li
+    <div className="hover:bg-slate-100 px">
+      <button
         onClick={() => {
           console.log("clicked");
           setShowEditModal(!showEditModal);
           console.log(showEditModal);
         }}
-        className="font-medium text-[15px]"
+        className="font-medium text-[15px] p-2 w-full"
       >
         EDIT INVOICE
-      </li>
+      </button>
       {showEditModal ? (
         <div className="fixed left-0 right-0 w-[80%] mx-auto bg-slate-100 text-black py-2 px-4 rounded-md h-[384px] top-1/2 -translate-y-1/2">
           <div className="absolute top-0 left-0 px-4 w-full flex items-center justify-between border-b border-gray-700 bg-slate-100">
             <h1>Edit invoice for Emmanuel Afolabi</h1>
             <div className="flex items-center justify-between">
               <button
-                onClick={() => handleUpdate(data.id)}
+                onClick={() => handleUpdate(data.id, tempData)}
                 className="bg-indigo-800"
               >
                 Update
@@ -150,7 +194,7 @@ const EditInvoice = ({ data }: PropsData) => {
                   <th>Amount</th>
                   <th>Del</th>
                 </tr>
-                {data.items.map((newData) => {
+                {tempData && tempData.items.map((newData) => {
                   return (
                     <tr key={newData.id}>
                       <th>{newData.date}</th>
@@ -164,7 +208,7 @@ const EditInvoice = ({ data }: PropsData) => {
                             {newData.description}
                           </option>
                           {selector
-                            .filter((select) => select.name !== "Select a bill")
+                            // .filter((select) => select.name !== "Select a bill")
                             .map((select) => {
                               return (
                                 <option id={select.name} value={select.name}>
@@ -220,7 +264,7 @@ const EditInvoice = ({ data }: PropsData) => {
               </table>
               <button
                 className="text-indigo-500"
-                onClick={() => handleNewEditData(data.id)}
+                onClick={handleNewEditData}
               >
                 Add new line
               </button>
