@@ -6,18 +6,18 @@ import {
   handleUpdateChange,
 } from "../Redux/invoice";
 import { useDispatch, useSelector } from "react-redux";
-import { billed, service } from "../data/data";
 import { RootState } from "../Redux/store";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import CustomModal from "./ui/CustomModal";
 
 interface PropsData {
   data: FullInvoiceData;
 }
 const EditInvoice = ({ data }: PropsData) => {
   const [showEditModal, setShowEditModal] = useState(false);
-  const [updateSaved, setUpdateSaved] = useState(false);
+  const [updateSaved, setUpdateSaved] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [tempData, setTempData] = useState(data);
   const selector = useSelector((state: RootState) => state.cart);
   // const selectorSubTotal = useSelector((state: RootState) => state.subTotal);
@@ -86,17 +86,30 @@ const EditInvoice = ({ data }: PropsData) => {
   const handleUpdate = (id: string, tempData: FullInvoiceData) => {
     console.log("update", id);
     setUpdateSaved(!updateSaved);
-    const cantUpdate = tempData.items.find((invoice) => invoice.name === '' || invoice.name === "Select a bill");
-    console.log(cantUpdate)
-    if(cantUpdate){
-      toast('cant update')
-      console.log('no update')
-    }else{
-      toast('Success')
-      console.log('success')
-      dispatch(handleUpdateChange({id, tempData}))
+    const cantUpdate = tempData?.items.find(
+      (invoice) => invoice.name === "" || invoice.name === "Select a bill"
+    );
+    console.log(cantUpdate);
+    if (cantUpdate) {
+      setUpdateSaved(false)
+      toast("cant update");
+      console.log("no update");
+    } else {
+      toast("Success");
+      console.log("success");
+      setUpdateSaved(false)
+      setTimeout(() => {
+        setIsLoading(true);
+        console.log("is loading:", isLoading);
+      }, 2000);
+      dispatch(handleUpdateChange({ id, tempData }));
     }
   };
+
+  const handleDelete = (id: number) => {
+    const newData = tempData.items.filter(item=> item.id !== id)
+    setTempData({...tempData, items: newData})
+  }
 
   const handleClear = () => {
     console.log("clear");
@@ -126,7 +139,7 @@ const EditInvoice = ({ data }: PropsData) => {
     console.log(tempData);
   }, [selectorInvoice, tempData]);
   return (
-    <div className="hover:bg-slate-100 px">
+    <div className="hover:bg-slate-100">
       <button
         onClick={() => {
           console.log("clicked");
@@ -137,7 +150,7 @@ const EditInvoice = ({ data }: PropsData) => {
       >
         EDIT INVOICE
       </button>
-      {showEditModal ? (
+      {/* {showEditModal ? (
         <div className="fixed left-0 right-0 w-[80%] mx-auto bg-slate-100 text-black py-2 px-4 rounded-md h-[384px] top-1/2 -translate-y-1/2">
           <div className="absolute top-0 left-0 px-4 w-full flex items-center justify-between border-b border-gray-700 bg-slate-100">
             <h1>Edit invoice for Emmanuel Afolabi</h1>
@@ -289,7 +302,26 @@ const EditInvoice = ({ data }: PropsData) => {
             </div>
           </div>
         </div>
-      ) : null}
+      ) : null} */}
+      <CustomModal
+      openModal={showEditModal}
+        invoiceHeader={"Edit invoice for Emmanuel Afolabi"}
+        saveLoad={"Update"}
+        selectorData={tempData.items}
+        selectorSubTotal={tempData.subTotalAmount}
+        selectorTax={tempData.subTotalAmount}
+        selectorTotal={tempData.mainTotalAmount}
+        handleSave={handleUpdate}
+        handleDecrease={handleEditDecrease}
+        handleIncrease={handleEditIncrease}
+        handleSelectChange={handleEditSelectChange}
+        handleNewData={handleNewEditData}
+        handleDelete={handleDelete}
+        selector={selector}
+        isLoading={isLoading}
+        handleClear={handleClear}
+        dataSaved={updateSaved}
+      />
       <ToastContainer />
     </div>
   );

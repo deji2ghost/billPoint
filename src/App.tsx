@@ -3,6 +3,7 @@ import './App.css'
 import InvoiceModal from './component/InvoiceModal'
 import InvoicePage from './page/InvoicePage'
 import SideNav from './component/SideNav'
+import CustomModal from './component/ui/CustomModal'
 
 function App() {
   const [ clicked, setClicked ] = useState(false)

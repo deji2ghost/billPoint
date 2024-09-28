@@ -14,16 +14,20 @@ interface Props{
     handleSelectChange: (id: number, e: ChangeEvent<HTMLSelectElement>) => void;
     handleNewData: () => void;
     handleDelete: (id: number) => void;
-    selector: CartItem[]
+    selector: CartItem[];
+    isLoading: boolean;
+    handleClear: () => void;
+    dataSaved: boolean;
+    saveLoad: string
 }
-const Modal = ({invoiceHeader, selectorData, selectorSubTotal, selectorTax, selectorTotal, handleSave, handleIncrease, handleDecrease, handleSelectChange, handleNewData, handleDelete, selector }: Props) => {
+const Modal = ({invoiceHeader, selectorData, selectorSubTotal, selectorTax, selectorTotal, handleSave, handleIncrease, handleDecrease, handleSelectChange, handleNewData, handleDelete, selector, isLoading, handleClear, dataSaved, saveLoad }: Props) => {
 
   return (
     <div className="relative w-[80%] mx-auto bg-slate-50 text-black py-2 px-4 rounded-md h-[400px] top-1/2 -translate-y-1/2">
       <div className="absolute top-0 left-0 px-4 py-2 w-full flex items-center justify-between drop-shadow-md bg-slate-100">
         <h1>{invoiceHeader}</h1>
         <div className="flex gap-5 items-center justify-between">
-          <button
+          {!dataSaved ? (!isLoading && <button className="bg-indigo-800 border-none outline-none px-5 py-2 rounded-md text-slate-100">Loading</button>) : <button
             disabled={selectorData.length <= 0}
             onClick={handleSave}
             className={`${
@@ -32,11 +36,11 @@ const Modal = ({invoiceHeader, selectorData, selectorSubTotal, selectorTax, sele
                 : "bg-indigo-800 hover:bg-opacity-80"
             } "border-none outline-none px-5 py-2 rounded-md text-slate-100 "`}
           >
-            Save
-          </button>
-          {/* <h1 className="cursor-pointer" onClick={handleClear}>
+            {saveLoad}
+          </button>}
+          <h1 className="cursor-pointer py-2" onClick={handleClear}>
             &#10005;
-          </h1> */}
+          </h1>
         </div>
       </div>
       <div className="bg-gray-300 py-3 px-3 mt-12">
@@ -81,9 +85,35 @@ const Modal = ({invoiceHeader, selectorData, selectorSubTotal, selectorTax, sele
                 <th className="">Description</th>
                 <th className="">Duration</th>
                 <th className="">Amount</th>
-                <th className="">Del</th>
+                {dataSaved && <th className="">Del</th>}
               </tr>
             </thead>
+            { !dataSaved ? 
+            <tbody className="text-left">
+            {selectorData &&
+              selectorData?.map((newData) => {
+                return (
+                  <tr
+                    className="border-b border-gray-600 items-center"
+                    key={newData?.id}
+                  >
+                    <td className=" w-[15%]">{newData?.date}</td>
+                    <td className=" w-[15%] py-7">
+                      {newData.duration}seconds
+                    </td>
+                    <td className=" w-[15%]">
+                      {newData.totalAmount.toLocaleString()}
+                    </td>
+                    <td className=" w-[15%]">
+                      <p className="">
+                        {newData.totalAmount.toLocaleString()}
+                      </p>
+                    </td>
+                  </tr>
+                );
+              })}
+          </tbody>
+            :
             <tbody className="text-left">
               {selectorData &&
                 selectorData?.map((newData) => {
@@ -158,14 +188,14 @@ const Modal = ({invoiceHeader, selectorData, selectorSubTotal, selectorTax, sele
                     </tr>
                   );
                 })}
-            </tbody>
+            </tbody>}
           </table>
-          <button
+          { dataSaved && <button
             className="text-indigo-800 font-bold text-lg border-b py-2 border-gray-600 w-full text-left"
             onClick={handleNewData}
           >
             Add New Line
-          </button>
+          </button>}
           <div className="flex flex-col items-end gap-3 mt-5 font-bold">
             <div className="flex items-center justify-between w-[50%]">
               <p>SubTotal:</p>
