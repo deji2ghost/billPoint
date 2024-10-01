@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import { ChangeEvent } from "react";
 import { CartItem, fullInvoice, FullInvoiceData } from "../../Redux/invoice";
 import { Data } from "../InvoiceModal";
 import { billed, service } from "../../data/data";
