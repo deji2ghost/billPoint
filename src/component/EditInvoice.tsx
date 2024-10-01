@@ -311,16 +311,17 @@ const EditInvoice = ({ data }: PropsData) => {
         selectorSubTotal={tempData.subTotalAmount}
         selectorTax={tempData.subTotalAmount}
         selectorTotal={tempData.mainTotalAmount}
-        handleSave={handleUpdate}
+        handleUpdate={handleUpdate}
         handleDecrease={handleEditDecrease}
         handleIncrease={handleEditIncrease}
-        handleSelectChange={handleEditSelectChange}
+        handleEditSelectChange={handleEditSelectChange}
         handleNewData={handleNewEditData}
         handleDelete={handleDelete}
         selector={selector}
         isLoading={isLoading}
         handleClear={handleClear}
         dataSaved={updateSaved}
+        tempData={tempData}
       />
       <ToastContainer />
     </div>
