@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import FormHeader from '../component/FormHeader'
 import FormFooter from '../component/FormFooter'
 import InputForm from '../component/ui/InputForm'
