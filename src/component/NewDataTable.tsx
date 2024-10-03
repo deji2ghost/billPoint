@@ -2,7 +2,7 @@ import { ChangeEvent } from "react";
 import { CartItem, fullInvoice } from "../Redux/invoice";
 import { Data } from "./InvoiceModal";
 import OptionModal from "./OptionModal";
-import Button from "./ui/Button";
+import Button from "./ui/CustomButton";
 
 interface newDataProps{
   newData: fullInvoice
@@ -59,22 +59,11 @@ const NewDataTable = ({newData, handleSelectChange, handleEditSelectChange, sele
         </select>
       </td>
       <td className=" w-[15%] text-center">
-        {/* <button
-          className={`${
-            newData.currentDuration <= 0
-              ? "bg-indigo-300"
-              : "bg-indigo-800 hover:bg-opacity-80"
-          } w-[25%] text-white text-[18px] outline-none border-none rounded-md`}
-          onClick={() => handleDecrease(newData)}
-          disabled={newData.currentDuration <= 0}
-        >
-          -
-        </button> */}
         <Button newData={newData} handleDecrease={handleDecrease}>
           -
         </Button>
         <input
-          className="w-[40%] text-center border border-gray-400 hover:border-indigo-800 outline-none rounded-md p-1"
+          className="w-[40%] text-center border border-gray-400 hover:border-indigo-800 outline-none rounded-md p-1 mx-1"
           type="number"
           value={
             newData?.description === "Select a bill"
@@ -82,17 +71,6 @@ const NewDataTable = ({newData, handleSelectChange, handleEditSelectChange, sele
               : newData?.duration.toLocaleString()
           }
         />
-        {/* <button
-          className={`${
-            newData.currentDuration <= 0
-              ? "bg-indigo-300"
-              : "bg-indigo-800 hover:bg-opacity-80"
-          } w-[25%] text-white text-[18px] outline-none border-none rounded-md`}
-          onClick={() => handleIncrease(newData)}
-          disabled={newData.currentDuration <= 0}
-        >
-          +
-        </button> */}
         <Button newData={newData} handleIncrease={handleIncrease}>
           +
         </Button>

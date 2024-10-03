@@ -2,7 +2,7 @@ import { ChangeEvent } from "react";
 import { CartItem, fullInvoice, FullInvoiceData } from "../../Redux/invoice";
 import { Data } from "../InvoiceModal";
 import { billed, service } from "../../data/data";
-import Button from "./Button";
+import Button from "./CustomButton";
 import NewDataTable from "../NewDataTable";
 import DetailsDataTable from "../DetailsDataTable";
 
